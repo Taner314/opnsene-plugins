@@ -57,7 +57,7 @@ class HttpOpnsense extends Base implements LeValidationInterface
             $dnslist[] = $this->cert_name;
             foreach ($dnslist as $fqdn) {
                 // NOTE: This may take some time.
-                $ip_found = gethostbyname("${fqdn}.");
+                $ip_found = gethostbyname("{$fqdn}.");
                 if (!empty($ip_found)) {
                     $iplist[] = (string)$ip_found;
                 }
@@ -104,16 +104,16 @@ class HttpOpnsense extends Base implements LeValidationInterface
                     // IPv4
                     $_dst = '127.0.0.1';
                     $_family = 'inet';
-                    LeUtils::log("using IPv4 address: ${ip}");
+                    LeUtils::log("using IPv4 address: {$ip}");
                 } elseif (($_ipv6_enabled == true) && (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))) {
                     // IPv6
                     $_dst = '::1';
                     $_family = 'inet6';
-                    LeUtils::log("using IPv6 address: ${ip}");
+                    LeUtils::log("using IPv6 address: {$ip}");
                 } else {
                     continue; // skip broken entries
                 }
-                $anchor_rules .= "rdr pass ${_family} proto tcp from any to ${ip} port 80 -> ${_dst} port ${local_http_port}\n";
+                $anchor_rules .= "rdr pass {$_family} proto tcp from any to {$ip} port 80 -> {$_dst} port {$local_http_port}\n";
             }
         } else {
             LeUtils::log_error("no IP addresses found to setup port forward");
@@ -127,10 +127,10 @@ class HttpOpnsense extends Base implements LeValidationInterface
         }
 
         // Create temporary port forward to allow acme challenges to get through
-        File::file_put_contents("${configdir}/acme_anchor_setup", "rdr-anchor \"acme-client\"\n", 0600);
-        Shell::run_safe('/sbin/pfctl -f %s', ["${configdir}/acme_anchor_setup"]);
-        File::file_put_contents("${configdir}/acme_anchor_rules", $anchor_rules, 0600);
-        Shell::run_safe('/sbin/pfctl -a %s -f %s', ['acme-client', "${configdir}/acme_anchor_rules"]);
+        File::file_put_contents("{$configdir}/acme_anchor_setup", "rdr-anchor \"acme-client\"\n", 0600);
+        Shell::run_safe('/sbin/pfctl -f %s', ["{$configdir}/acme_anchor_setup"]);
+        File::file_put_contents("{$configdir}/acme_anchor_rules", $anchor_rules, 0600);
+        Shell::run_safe('/sbin/pfctl -a %s -f %s', ['acme-client', "{$configdir}/acme_anchor_rules"]);
     }
 
     public function cleanup()

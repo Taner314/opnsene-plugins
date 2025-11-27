@@ -337,7 +337,7 @@ function connectWithServer(array $options, &$error): ?SftpClient
         if ($err = $sftp->cd($remote_path)->lastError()) {
             $error = $err;
             $error["change_home_dir_failed"] = true;
-            LeUtils::log_error("SFTP failed cd into '${remote_path}'", $err);
+            LeUtils::log_error("SFTP failed cd into '{$remote_path}'", $err);
             return null;
         }
     }
@@ -397,18 +397,18 @@ function addFilesToUpload(array $options, SftpUploader &$uploader)
 
         foreach (findCertificates($cert_ids) as $cert) {
             if (!isset($cert["content"])) {
-                LeUtils::log_error("Ignoring SFTP upload for cert '${cert["name"]}', since it is not available in trust storage.");
+                LeUtils::log_error("Ignoring SFTP upload for cert '{$cert["name"]}', since it is not available in trust storage.");
                 continue;
             }
 
             foreach ($cert["content"] as $name => $content) {
                 if (empty($content)) {
-                    LeUtils::log_error("Content for '${name}.pem' in cert '${cert["name"]}' is empty, skipping SFTP upload.");
+                    LeUtils::log_error("Content for '{$name}.pem' in cert '{$cert["name"]}' is empty, skipping SFTP upload.");
                     continue;
                 }
 
                 // Build the upload name
-                $target_path = requireThat(UPLOAD_NAME_TEMPLATES[$name], "No upload template defined for '${name}'");
+                $target_path = requireThat(UPLOAD_NAME_TEMPLATES[$name], "No upload template defined for '{$name}'");
                 $target_path = stripcslashes($options[$target_path["option"]] ?: $target_path["default"]);
 
                 $target_path = join("/", array_map(
@@ -421,7 +421,7 @@ function addFilesToUpload(array $options, SftpUploader &$uploader)
 
                                 return in_array($index, ["name", "id", "updated"])
                                     ? stripcslashes($cert[$index])
-                                    : "__unknown-template-param__${index}__";
+                                    : "__unknown-template-param__{$index}__";
                             },
                             $path_part
                         );
@@ -446,7 +446,7 @@ function addFilesToUpload(array $options, SftpUploader &$uploader)
 
                     $uploader->addContent($content, $target_path, $cert["updated"], $mod, $chgrp, $modtime);
                 } else {
-                    LeUtils::log_error("Cannot add '${name}.pem' to SFTP upload since the upload path '$target_path' is invalid.");
+                    LeUtils::log_error("Cannot add '{$name}.pem' to SFTP upload since the upload path '$target_path' is invalid.");
                 }
             }
         }
@@ -492,7 +492,7 @@ function findCertificates(array $certificate_ids_or_names, $load_content = true)
         ) {
             if ($cert->enabled == 0) {
                 if (!empty($certificate_ids_or_names)) {
-                    LeUtils::log_error("Certificate '${name}' (id: $id) is disabled, skipping SFTP upload.");
+                    LeUtils::log_error("Certificate '{$name}' (id: $id) is disabled, skipping SFTP upload.");
                 }
 
                 continue;

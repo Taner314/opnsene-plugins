@@ -165,7 +165,7 @@ function commandRunRemote(array &$options): int
     $lines = runRemoteCommand($options, $error);
     if (!$error) {
         $host = $options["host"] . (($port = ($options["port"] ?? false)) ? ":$port" : "");
-        LeUtils::log_debug("SSH [$host]> ${options["run"]}:" . PHP_EOL . join(PHP_EOL, $lines));
+        LeUtils::log_debug("SSH [$host]> {$options["run"]}:" . PHP_EOL . join(PHP_EOL, $lines));
         return EXITCODE_SUCCESS;
     }
 
@@ -265,7 +265,7 @@ function buildSSHArguments(SSHKeys $ssh_keys, $host, $username, $identity_type =
 
     $trust = $ssh_keys->trustHost($host, $host_key, $port);
     if ($trust["ok"] !== true) {
-        LeUtils::log_error("Failed establishing trust in '$host'; Cause: ${trust["error"]}");
+        LeUtils::log_error("Failed establishing trust in '$host'; Cause: {$trust["error"]}");
         unset($trust["ok"]);
         return [false, array_merge($trust, ["host_not_trusted" => true])];
     } else {
@@ -277,7 +277,7 @@ function buildSSHArguments(SSHKeys $ssh_keys, $host, $username, $identity_type =
         "ssh",
         "-p", $port,
         "-oUser=$username",
-        "-oUserKnownHostsFile=${ssh_keys->knownHostsFile()}",
+        "-oUserKnownHostsFile={$ssh_keys->knownHostsFile()}",
     ];
 
     // Handle client side identity

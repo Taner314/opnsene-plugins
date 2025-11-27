@@ -112,7 +112,7 @@ function help()
 
     echo PHP_EOL . 'Available modes:' . PHP_EOL;
     foreach (MODES as $name => $options) {
-        echo "\"$name\" - ${options["description"]}" . PHP_EOL;
+        echo "\"$name\" - {$options["description"]}" . PHP_EOL;
     }
 
     echo PHP_EOL . "Examples:" . PHP_EOL
