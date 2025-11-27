@@ -50,7 +50,7 @@ class LeValidationFactory
         $model = new \OPNsense\AcmeClient\AcmeClient();
         $obj = $model->getNodeByReference(self::CONFIG_PATH . '.' . $uuid);
         if ($obj == null) {
-            LeUtils::log_error("challenge type not found: {$uuid}");
+            LeUtils::log_error("challenge type not found: ${uuid}");
             return null;
         }
 
@@ -74,7 +74,7 @@ class LeValidationFactory
         foreach (glob(__DIR__ . "/LeValidation/*.php") as $filename) {
             $srv_found = basename($filename, '.php');
             try {
-                $reflClass = new \ReflectionClass("OPNsense\\AcmeClient\\LeValidation\\{$srv_found}");
+                $reflClass = new \ReflectionClass("OPNsense\\AcmeClient\\LeValidation\\${srv_found}");
             } catch (\ReflectionException $e) {
                 break;
             }
@@ -87,7 +87,7 @@ class LeValidationFactory
                 }
             }
         }
-        LeUtils::log_error("challenge type not supported: " . (string)$search_name . " ({$uuid})");
+        LeUtils::log_error("challenge type not supported: " . (string)$search_name . " (${uuid})");
         return null;
     }
 }

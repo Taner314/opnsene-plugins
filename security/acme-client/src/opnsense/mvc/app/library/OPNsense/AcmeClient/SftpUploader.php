@@ -159,7 +159,7 @@ class SftpUploader
                     ->lastError();
 
                 if ($error) {
-                    LeUtils::log_error("Cannot continue with SFTP upload since changing to initial remote path '{$this->pending_base_path}' failed", $error);
+                    LeUtils::log_error("Cannot continue with SFTP upload since changing to initial remote path '${this->pending_base_path}' failed", $error);
                     return self::UPLOAD_ERROR;
                 }
             }
@@ -245,11 +245,11 @@ class SftpUploader
                 $remote_file = $remote_files[$remote_filename] ?? ["type" => "-", "owner" => $username];
                 $remote_is_file = $remote_file["type"] === "-";
                 $remote_is_readonly = preg_match('/^[^wW]+$/', $remote_file["permissions"] ?? "");
-                LeUtils::log_debug("SFTP current remote file permissions: '{$remote_file["permissions"]}'");
+                LeUtils::log_debug("SFTP current remote file permissions: '${remote_file["permissions"]}'");
 
                 // Check if a folder/socket/symlink, etc is in the way
                 if (!$remote_is_file) {
-                    LeUtils::log_error("SFTP failed uploading file '{$local_file}' as there is a non-file in the way at '{$file["target"]}'");
+                    LeUtils::log_error("SFTP failed uploading file '${local_file}' as there is a non-file in the way at '${file["target"]}'");
                     return self::UPLOAD_ERROR_NO_OVERWRITE;
                 }
 
@@ -262,9 +262,9 @@ class SftpUploader
                 // Preserving the modification time is not supported by all SFTP servers.
                 $preserve = $file["modtime"];
                 if ($preserve !== false) {
-                    LeUtils::log("SFTP upload will try to preserve file modification time for '{$file["target"]}'");
+                    LeUtils::log("SFTP upload will try to preserve file modification time for '${file["target"]}'");
                 } else {
-                    LeUtils::log("SFTP upload will not preserve file modification time for '{$file["target"]}'");
+                    LeUtils::log("SFTP upload will not preserve file modification time for '${file["target"]}'");
                 }
 
                 // Initial upload when permissions are properly set.
@@ -274,7 +274,7 @@ class SftpUploader
 
                 // Upload file.
                 if (!$remote_is_readonly) {
-                    LeUtils::log("Uploading file '{$local_file}' to '{$file["target"]}'");
+                    LeUtils::log("Uploading file '${local_file}' to '${file["target"]}'");
                     $preserve_times_and_mod = $chmod !== false;
 
                     if ($error = $this->sftp->put($local_file, $remote_filename, $preserve)->lastError()) {
@@ -285,7 +285,7 @@ class SftpUploader
                         if ($should_upload_with_permission_change) {
                             $this->sftp->clearError();
                         } else {
-                            LeUtils::log_error("SFTP failed uploading file '{$local_file}' to '{$file["target"]}'", $error);
+                            LeUtils::log_error("SFTP failed uploading file '${local_file}' to '${file["target"]}'", $error);
                             return self::UPLOAD_ERROR_NO_PERMISSION;
                         }
                     } else {
@@ -295,21 +295,21 @@ class SftpUploader
 
                 // Second attempt when initial failed or was skipped due to write protection (only possible if we have chmod defined to reset permissions later)
                 if ($should_upload_with_permission_change && $this->isFileOwnedByConnection($remote_file, $connection)) {
-                    LeUtils::log("Trying to upload file '{$local_file}' to '{$file["target"]}' with adjusted permissions");
+                    LeUtils::log("Trying to upload file '${local_file}' to '${file["target"]}' with adjusted permissions");
 
                     // Change file permission to make it writable.
                     if ($error = $this->sftp->chmod($remote_filename, '0600')->lastError()) {
-                        LeUtils::log_error("SFTP failed changing permission to '0600' for '{$file["target"]}'", $error);
+                        LeUtils::log_error("SFTP failed changing permission to '0600' for '${file["target"]}'", $error);
                         $this->sftp->clearError();
                     }
 
                     // Try again to upload file.
                     if ($error = $this->sftp->put($local_file, $remote_filename, $preserve)->lastError()) {
-                        LeUtils::log_error("SFTP failed uploading file (with adjusted permissions) '{$local_file}' to '{$file["target"]}'", $error);
+                        LeUtils::log_error("SFTP failed uploading file (with adjusted permissions) '${local_file}' to '${file["target"]}'", $error);
                         return self::UPLOAD_ERROR_NO_PERMISSION;
                     }
                 } elseif ($remote_is_readonly) {
-                    LeUtils::log_error("SFTP failed uploading file '{$local_file}' to '{$file["target"]}'. Existing file is write protected.");
+                    LeUtils::log_error("SFTP failed uploading file '${local_file}' to '${file["target"]}'. Existing file is write protected.");
                     return self::UPLOAD_ERROR_NO_PERMISSION;
                 }
 
@@ -317,14 +317,14 @@ class SftpUploader
                 // Applying chmod / chgrp if requested.
                 if ($chmod) {
                     if ($error = $this->sftp->chmod($remote_filename, $chmod)->lastError()) {
-                        LeUtils::log_error("SFTP failed chmod ($chmod) for '{$file["target"]}'", $error);
+                        LeUtils::log_error("SFTP failed chmod ($chmod) for '${file["target"]}'", $error);
                         return self::UPLOAD_ERROR_CHMOD_FAILED;
                     }
                 }
 
                 if ($chgrp) {
                     if ($error = $this->sftp->chgrp($remote_filename, $chgrp)->lastError()) {
-                        LeUtils::log_error("SFTP failed chgrp ($chgrp) for '{$file["target"]}'", $error);
+                        LeUtils::log_error("SFTP failed chgrp ($chgrp) for '${file["target"]}'", $error);
                         return self::UPLOAD_ERROR_CHGRP_FAILED;
                     }
                 }

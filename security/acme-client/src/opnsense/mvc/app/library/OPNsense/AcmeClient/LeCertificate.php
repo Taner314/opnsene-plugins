@@ -132,7 +132,7 @@ class LeCertificate extends LeCommon
         clearstatcache(); // don't let the cache fool us
         foreach (array($this->cert_file, $this->cert_key_file, $this->cert_chain_file, $this->cert_fullchain_file) as $file) {
             if (!is_file($file)) {
-                LeUtils::log_error("unable to import certificate " . $this->config->name . ", file not found: {$file}");
+                LeUtils::log_error("unable to import certificate " . $this->config->name . ", file not found: ${file}");
                 Config::getInstance()->unlock();
                 return false;
             }
@@ -181,7 +181,7 @@ class LeCertificate extends LeCommon
 
         // Create new CA
         if ($ca_found == false) {
-            LeUtils::log("imported ACME CA: {$ca_cn} ({$ca['refid']})");
+            LeUtils::log("imported ACME CA: ${ca_cn} (${ca['refid']})");
             $newca = $caModel->ca->Add();
             foreach (array_keys($ca) as $cacfg) {
                 $newca->$cacfg = (string)$ca[$cacfg];
@@ -268,7 +268,7 @@ class LeCertificate extends LeCommon
             $newcert->crt = base64_encode($cert_content);
             $newcert->prv = base64_encode($key_content);
         }
-        LeUtils::log("{$import_log_message} ACME X.509 certificate: {$cert_cn} ({$cert['refid']})");
+        LeUtils::log("${import_log_message} ACME X.509 certificate: ${cert_cn} (${cert['refid']})");
 
         // Serialize to config and save
         // Skip validation because the current in-memory model may not
@@ -344,7 +344,7 @@ class LeCertificate extends LeCommon
             LeUtils::log('auto renewal is disabled for certificate: ' . (string)$this->config->name);
             return false;
         }
-        LeUtils::log("{$acme_action} certificate: " . (string)$this->config->name);
+        LeUtils::log("${acme_action} certificate: " . (string)$this->config->name);
         LeUtils::log('using CA: ' . $this->ca);
 
         // Ensure that account is registered.
@@ -358,7 +358,7 @@ class LeCertificate extends LeCommon
         $configdir = (string)sprintf(self::ACME_CONFIG_DIR, (string)$this->config->id);
         foreach (array($certdir, $keydir, $configdir) as $dir) {
             if (!is_dir($dir)) {
-                LeUtils::log_debug("creating directory: {$dir}");
+                LeUtils::log_debug("creating directory: ${dir}");
                 mkdir($dir, 0700, true);
             }
         }
@@ -589,7 +589,7 @@ class LeCertificate extends LeCommon
                     $automation->run();
                 }
             } else {
-                LeUtils::log_error("ignoring invalid automation: {$auto_uuid}");
+                LeUtils::log_error("ignoring invalid automation: ${auto_uuid}");
             }
         }
 

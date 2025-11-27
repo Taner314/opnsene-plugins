@@ -517,7 +517,7 @@
                         <dns_scaleway>Scaleway</dns_scaleway>
                         <dns_schlundtech>SchlundTech</dns_schlundtech>
                         <dns_selectel>selectel.com / selectel.ru</dns_selectel>
-                        <dns_selectel_v2>selectel.com V2 / selectel.ru V2</dns_selectel_v2>
+                        <dns_selectelv2>selectel.com V2 / selectel.ru V2</dns_selectelv2>
                         <dns_selfhost>Selfhost</dns_selfhost>
                         <dns_servercow>Servercow</dns_servercow>
                         <dns_simply>Simply.com</dns_simply>

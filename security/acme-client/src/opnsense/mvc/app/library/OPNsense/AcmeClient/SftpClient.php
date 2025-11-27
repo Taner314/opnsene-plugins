@@ -80,7 +80,7 @@ class SftpClient
 
         $trust = $this->ssh_keys->trustHost($host, $host_key, $port);
         if ($trust["ok"] !== true) {
-            LeUtils::log_error("Failed establishing trust in '$host'; Cause: {$trust["error"]}");
+            LeUtils::log_error("Failed establishing trust in '$host'; Cause: ${trust["error"]}");
             unset($trust["ok"]);
             $this->failed_status = array_merge($trust, ["host_not_trusted" => true]);
             return false;
@@ -93,7 +93,7 @@ class SftpClient
             "sftp",
             "-P", $port,
             "-oUser=$username",
-            "-oUserKnownHostsFile={$this->ssh_keys->knownHostsFile()}",
+            "-oUserKnownHostsFile=${this->ssh_keys->knownHostsFile()}",
         ];
 
         // Handle client side identity
@@ -319,7 +319,7 @@ class SftpClient
             if ($error || $remote_path !== ($pwd = $this->pwd())) {
                 $this->failed_status = array_merge(($error ?: []), [
                     "failure" => true,
-                    "error" => "Failed changing path to '$remote_path' (pwd: '$pwd'); Cause: {$error["error"]}"
+                    "error" => "Failed changing path to '$remote_path' (pwd: '$pwd'); Cause: ${error["error"]}"
                 ]);
             }
         }

@@ -93,7 +93,7 @@ class SSHKeys
 
             Utils::requireThat(
                 $file_created,
-                "Failed creating file '{$this->known_hosts_file}' with permission " . self::KNOWN_HOSTS_FILE_CREATE_MODE
+                "Failed creating file '${this->known_hosts_file}' with permission " . self::KNOWN_HOSTS_FILE_CREATE_MODE
             );
         }
 
@@ -168,7 +168,7 @@ class SSHKeys
             $is_key_known = true;
         } elseif ($known_by_key) {
             if (strcasecmp(trim($host), trim($known_by_key["host"])) != 0) {
-                LeUtils::log_debug("Host key is in known_hosts but hostname differs. Changing '$host' to '{$known_by_key["host"]}'.");
+                LeUtils::log_debug("Host key is in known_hosts but hostname differs. Changing '$host' to '${known_by_key["host"]}'.");
                 $host = $known_by_key["host"];
             }
             $is_key_known = true;
@@ -199,7 +199,7 @@ class SSHKeys
 
             if (!empty($matching_remote_host_keys)) {
                 if ($known_by_host && $known_by_host_matches_port) {
-                    LeUtils::log_debug("Removing known_hosts entry with differing key for '{$known_by_host["host_query"]}' as it is in the way.");
+                    LeUtils::log_debug("Removing known_hosts entry with differing key for '${known_by_host["host_query"]}' as it is in the way.");
                     $this->removeKnownHost($known_by_host["host_query"]);
                 }
 
@@ -207,7 +207,7 @@ class SSHKeys
                     LeUtils::log_debug("Adding known_hosts entry: " . json_encode($key["key_info"], JSON_UNESCAPED_SLASHES));
                     $ok = file_put_contents($this->knownHostsFile(), $key["host_key"] . PHP_EOL, FILE_APPEND);
                     if (!$ok) {
-                        LeUtils::log_error("Failed adding SSH known_hosts entry {$key["host_key"]}");
+                        LeUtils::log_error("Failed adding SSH known_hosts entry ${key["host_key"]}");
                     }
                 }
 
@@ -275,7 +275,7 @@ class SSHKeys
         //         This ensures specific keys (with port) are selected first.
         if ($port > 0) {
             foreach (array_reverse($search_list) as $item) {
-                array_unshift($search_list, "[{$item}]:{$port}");
+                array_unshift($search_list, "[${item}]:${port}");
             }
         }
 
@@ -334,12 +334,12 @@ class SSHKeys
                     ? ""
                     : PHP_EOL . "ssh-keyscan: " . join(PHP_EOL . "ssh-keyscan: ", $lines);
 
-                LeUtils::log_error("Failed querying SSH host keys ($key_type) for [$names] port $port. Exit code: {$p->exitCode} (error-marker: $marker) $output");
+                LeUtils::log_error("Failed querying SSH host keys ($key_type) for [$names] port $port. Exit code: ${p->exitCode} (error-marker: $marker) $output");
             }
         }
 
         if (empty($keys)) {
-            LeUtils::log_debug("Couldn't fetch public host key ($key_type) from {$host}:{$port}");
+            LeUtils::log_debug("Couldn't fetch public host key ($key_type) from ${host}:${port}");
 
             if (!is_array($error) || empty($error)) {
                 $error = ["connection_refused" => true];
@@ -387,7 +387,7 @@ class SSHKeys
                         ? ""
                         : PHP_EOL . join(PHP_EOL, $lines);
 
-                    LeUtils::log_error("Failed querying SSH known hosts for $name_or_ip ($host). Exit code: {$p->exitCode} $output");
+                    LeUtils::log_error("Failed querying SSH known hosts for $name_or_ip ($host). Exit code: ${p->exitCode} $output");
                 }
             }
         }
@@ -411,7 +411,7 @@ class SSHKeys
         if ($p = Process::open(["ssh-keygen", "-R", $host, "-f", $this->knownHostsFile()])) {
             $ok = $p->close() === 0;
             if (!$ok) {
-                LeUtils::log_error("Failed removing SSH known hosts for $host. Return code was: {$p->exitCode}");
+                LeUtils::log_error("Failed removing SSH known hosts for $host. Return code was: ${p->exitCode}");
             }
         }
 
@@ -454,12 +454,12 @@ class SSHKeys
     {
         Utils::requireThat(in_array($identity_type, self::IDENTITY_TYPES), "Identity type '$identity_type' unknown.");
 
-        list($key_type, $key_size) = explode('_', "{$identity_type}_", 2);
+        list($key_type, $key_size) = explode('_', "${identity_type}_", 2);
         if (!$key_size && self::DEFAULT_IDENTITY_KEY_BITS[$key_type] > 0) {
             $key_size = self::DEFAULT_IDENTITY_KEY_BITS[$key_type];
         }
 
-        $identity_path = "{$this->config_path}/id.{$identity_type}";
+        $identity_path = "${this->config_path}/id.${identity_type}";
 
         if (!file_exists($identity_path)) {
             $generate_key = [
@@ -480,13 +480,13 @@ class SSHKeys
 
                 Utils::requireThat(
                     $p->close() == 0,
-                    "Failed generating identity $identity_path: Error code: {$p->exitCode}" . PHP_EOL
+                    "Failed generating identity $identity_path: Error code: ${p->exitCode}" . PHP_EOL
                     . "Command: " . join(" ", $generate_key)
                 );
             }
         }
 
-        return $private ? $identity_path : "{$identity_path}.pub";
+        return $private ? $identity_path : "${identity_path}.pub";
     }
 
     /**

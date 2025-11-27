@@ -1259,7 +1259,7 @@
         <id>validation.dns_selectelv2_login_name</id>
         <label>Service username</label>
         <type>text</type>
-        <help>Service username, can be seen in the <a href="https://my.selectel.ru/iam/users_management/users?type=service">control panel</a></help>
+        <help>Service username, can be seen in the control panel</help>
     </field>
     <field>
         <id>validation.dns_selectelv2_password</id>

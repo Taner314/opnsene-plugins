@@ -76,7 +76,7 @@ class LeUtils
      */
     public static function log($msg)
     {
-        syslog(LOG_NOTICE, "AcmeClient: {$msg}");
+        syslog(LOG_NOTICE, "AcmeClient: ${msg}");
     }
 
     /**
@@ -90,7 +90,7 @@ class LeUtils
         }
 
         if ($debug) {
-            syslog(LOG_NOTICE, "AcmeClient: {$msg}");
+            syslog(LOG_NOTICE, "AcmeClient: ${msg}");
         }
     }
 

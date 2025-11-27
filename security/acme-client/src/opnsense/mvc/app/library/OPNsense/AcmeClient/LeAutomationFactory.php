@@ -50,7 +50,7 @@ class LeAutomationFactory
         $model = new \OPNsense\AcmeClient\AcmeClient();
         $obj = $model->getNodeByReference(self::CONFIG_PATH . '.' . $uuid);
         if ($obj == null) {
-            LeUtils::log_error("automation not found: {$uuid}");
+            LeUtils::log_error("automation not found: ${uuid}");
             return null;
         }
 
@@ -61,7 +61,7 @@ class LeAutomationFactory
         foreach (glob(__DIR__ . "/LeAutomation/*.php") as $filename) {
             $file_found = basename($filename, '.php');
             try {
-                $reflClass = new \ReflectionClass("OPNsense\\AcmeClient\\LeAutomation\\{$file_found}");
+                $reflClass = new \ReflectionClass("OPNsense\\AcmeClient\\LeAutomation\\${file_found}");
             } catch (\ReflectionException $e) {
                 break;
             }
@@ -75,7 +75,7 @@ class LeAutomationFactory
             }
         }
 
-        LeUtils::log_error("automation not supported: " . (string)$obj->type . " ({$uuid})");
+        LeUtils::log_error("automation not supported: " . (string)$obj->type . " (${uuid})");
         return null;
     }
 }

@@ -142,7 +142,7 @@ class Utils
             . PHP_EOL . join(PHP_EOL, $options) . PHP_EOL;
 
         foreach ($commands as $name => $cmd) {
-            echo PHP_EOL . "COMMAND \"$name\" {$cmd["description"]}" . PHP_EOL . "Options:" . PHP_EOL;
+            echo PHP_EOL . "COMMAND \"$name\" ${cmd["description"]}" . PHP_EOL . "Options:" . PHP_EOL;
             foreach ($cmd["options"] as $option) {
                 $option = preg_replace(['/^([^:]+)$/', '/(.+)::$/', '/(.+):$/'], ['[$1]', '[$1=value]', '$1=value'], "--$option");
                 echo "         $option" . PHP_EOL;
@@ -203,7 +203,7 @@ class Utils
                     if (is_array($config = $optionsByActionId($options["automation-id"]))) {
                         $options = array_merge($config, $options);
                     } else {
-                        LeUtils::log_error("No usable config found for automation-id {$options["automation-id"]}");
+                        LeUtils::log_error("No usable config found for automation-id ${options["automation-id"]}");
                         exit(1);
                     }
                 }
@@ -225,7 +225,7 @@ class Utils
                 $help();
             } else {
                 $cmd = join(" ", $argv);
-                LeUtils::log_error("Parsing of '$cmd' failed at argument '{$argv[$index]}'");
+                LeUtils::log_error("Parsing of '$cmd' failed at argument '${argv[$index]}'");
             }
             exit(1);
         }
